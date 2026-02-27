@@ -237,7 +237,7 @@ html, body {
   flex: 1;
   display: grid;
   grid-template-columns: 1fr clamp(36px, 5vw, 52px) 1fr;
-  padding: clamp(4px, 1vh, 12px) clamp(10px, 2vw, 24px) clamp(4px, 1vh, 10px);
+  padding: clamp(4px, 1vh, 12px) clamp(10px, 2vw, 24px) clamp(8px, 2vh, 20px);
   min-height: 0;
   align-items: center;
   overflow: hidden;
@@ -267,8 +267,8 @@ html, body {
   width: 100%;
   /* Lock to MTG card aspect ratio so the full card is always visible */
   aspect-ratio: 488 / 680;
-  /* 340px accounts for all fixed UI: header + prompt + difficulty + feedback + key-hints */
-  max-height: calc(100vh - 340px);
+  /* 380px accounts for all fixed UI + bottom breathing room */
+  max-height: calc(100vh - 380px);
   border-radius: clamp(6px, 1vw, 12px);
   overflow: hidden;
   background: transparent;
