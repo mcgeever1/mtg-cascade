@@ -314,6 +314,7 @@ let lastAnswerCorrect = false;
 let autoAdvanceTimer = null;
 let shuffledQueue = [];
 let usedCardPairs = new Set();
+let recentCardNames = []; // sliding window: last 2 turns' card names [[nameA,nameB], ...]
 
 // ─── DOM ─────────────────────────────────────────────────────────────────────
 const loadingScreen  = document.getElementById('loading-screen');
@@ -434,6 +435,7 @@ async function loadCommander(commander) {
     currentCommander = commander;
     cardPool = cards;
     usedCardPairs.clear();
+    recentCardNames = [];
 
     // Set commander display
     const cmdCard = getCommanderCard(data);
@@ -472,11 +474,14 @@ function pickPair() {
   //   minInclusion — at least one card must exceed this threshold (well-known card anchor)
   const { minRatio, maxRatio, minInclusion } = getDifficultyLevel(streak);
 
-  function findCandidates(mn, mx, minInc) {
+  const recentNameSet = new Set(recentCardNames.flat());
+
+  function findCandidates(mn, mx, minInc, allowRecent = false) {
     const out = [];
     for (let i = 0; i < cardPool.length - 1; i++) {
       for (let j = i + 1; j < cardPool.length; j++) {
         const a = cardPool[i], b = cardPool[j];
+        if (!allowRecent && (recentNameSet.has(a.name) || recentNameSet.has(b.name))) continue;
         const pairKey = [a.name, b.name].sort().join('|||');
         if (usedCardPairs.has(pairKey)) continue;
         const incA = getInclusion(a), incB = getInclusion(b);
@@ -491,7 +496,7 @@ function pickPair() {
     return out;
   }
 
-  // 1. Exact band + popularity floor
+  // 1. Exact band + popularity floor (excluding recent cards)
   let candidates = findCandidates(minRatio, maxRatio, minInclusion);
 
   // 2. Pair pool exhausted — reset and retry with same constraints
@@ -510,9 +515,14 @@ function pickPair() {
     candidates = findCandidates(minRatio, Infinity, 0);
   }
 
-  // 5. Last resort — any pair
+  // 5. Allow recently seen cards if the pool is very small
   if (candidates.length === 0) {
-    candidates = findCandidates(1.0, Infinity, 0);
+    candidates = findCandidates(minRatio, Infinity, 0, true);
+  }
+
+  // 6. Last resort — any pair including recent cards
+  if (candidates.length === 0) {
+    candidates = findCandidates(1.0, Infinity, 0, true);
   }
 
   if (candidates.length > 0) {
@@ -533,6 +543,10 @@ function nextRound() {
   difficultyBadge.style.color = diff.color;
 
   const pair = pickPair();
+
+  // Track this pair so the same cards won't appear for the next 2 turns
+  recentCardNames.push([pair.a.name, pair.b.name]);
+  if (recentCardNames.length > 2) recentCardNames.shift();
 
   // Randomly assign left/right to avoid positional bias
   const [left, right] = Math.random() < 0.5 ? [pair.a, pair.b] : [pair.b, pair.a];
