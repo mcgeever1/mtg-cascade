@@ -19,7 +19,7 @@ function createWindow() {
     },
     backgroundColor: '#0d0d1a',
     titleBarStyle: 'hiddenInset',
-    title: 'Cascade',
+    title: 'MTG Cascade',
   });
 
   mainWindow.loadFile('index.html');
