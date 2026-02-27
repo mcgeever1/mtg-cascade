@@ -518,9 +518,12 @@ kbd {
   cursor: zoom-in;
 }
 
-/* ── Touch devices: hide desktop-only keyboard hints ─────────────────────── */
+/* ── Touch devices: hide keyboard hints, enlarge commander UI ────────────── */
 @media (hover: none) and (pointer: coarse) {
   .key-hints { display: none; }
+  .commander-name { font-size: 18px; }
+  .btn-new-commander { width: 40px; height: 40px; font-size: 20px; }
+  .feedback-bar { margin-bottom: 1em; }
 }
 
 /* ── Share button ────────────────────────────────────────────────────────── */
