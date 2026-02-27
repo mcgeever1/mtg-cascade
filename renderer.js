@@ -23,6 +23,38 @@ const MANA_ROCKS = new Set([
   'Talisman of Impulse', 'Jeweled Lotus', 'Mox Opal', 'Mox Amber',
 ]);
 
+// Partner commanders excluded — their EDHREC pools are pair-dependent and display incorrectly solo
+const PARTNER_SLUGS = new Set([
+  // C16 generic partners
+  'akiri-line-slinger','bruse-tarl-boorish-herder','ikra-shidiqi-the-usurper',
+  'ishai-ojutai-dragonspeaker','kraum-ludevics-opus','kydele-chosen-of-kruphix',
+  'ludevic-necro-alchemist','ravos-soultender','reyhan-last-of-the-abzan',
+  'silas-renn-seeker-adept','tana-the-bloodsower','thrasios-triton-hero',
+  'tymna-the-weaver','vial-smasher-the-fierce',
+  // CMR generic partners
+  'akroma-vision-of-ixidor','ardenn-intrepid-archaeologist','esior-wardwing-familiar',
+  'keleth-sunmane-familiar','livio-oathsworn-sentinel','prava-of-the-steel-legion',
+  'rebbec-architect-of-ascension','rograkh-son-of-rohgahh','alharu-solemn-ritualist',
+  'brinelin-the-moon-kraken','eligeth-crossroads-augur','ghost-of-ramirez-depietro',
+  'glacian-powerstone-engineer','malcolm-keen-eyed-navigator',
+  'sakashima-of-a-thousand-faces','siani-eye-of-the-storm',
+  'armix-filigree-thrasher','keskit-the-flesh-sculptor','nadier-agent-of-the-duskenel',
+  'tevesh-szat-doom-of-fools','tormod-the-desecrator',
+  'dargo-the-shipwrecker','jeska-thrice-reborn','kamber-the-plunderer',
+  'krark-the-thumbless','toggo-goblin-weaponsmith',
+  'alena-kessig-trapper','anara-wolvid-familiar','halana-kessig-ranger',
+  'ich-tekik-salvage-splicer','kodama-of-the-east-tree','numa-joraga-chieftain',
+  'obuun-mul-daya-ancestor','akiri-fearless-voyager',
+  // Battlebond "Partner With" pairs
+  'will-kenrith','rowan-kenrith','pir-imaginative-rascal','toothy-imaginary-friend',
+  'zndrsplt-eye-of-wisdom','okaun-eye-of-chaos','khorvath-brightflame',
+  'sylvia-brightspear','regna-the-redeemer','krav-the-unredeemed',
+  // CMR "Partner With" pairs
+  'brallin-skyshark-rider','shabraz-the-skyshark','cazur-ruthless-stalker',
+  'ukkima-stalking-shadow','falthis-shadowcat-familiar','kediss-emberclaw-familiar',
+  'trynn-champion-of-freedom','silvar-devourer-of-the-free',
+]);
+
 // Popular EDH commanders with verified EDHREC slugs
 const COMMANDERS = [
   { name: "Atraxa, Praetors' Voice",        slug: "atraxa-praetors-voice" },
@@ -68,8 +100,6 @@ const COMMANDERS = [
   { name: "Gishath, Sun's Avatar",           slug: "gishath-suns-avatar" },
   { name: "Toxrill, the Corrosive",          slug: "toxrill-the-corrosive" },
   { name: "Anhelo, the Painter",             slug: "anhelo-the-painter" },
-  { name: "Tymna the Weaver",                slug: "tymna-the-weaver" },
-  { name: "Thrasios, Triton Hero",           slug: "thrasios-triton-hero" },
   { name: "Grand Arbiter Augustin IV",       slug: "grand-arbiter-augustin-iv" },
   { name: "Teferi, Temporal Archmage",       slug: "teferi-temporal-archmage" },
   { name: "Elsha of the Infinite",           slug: "elsha-of-the-infinite" },
@@ -147,19 +177,12 @@ const COMMANDERS = [
   { name: "Ezuri, Renegade Leader",          slug: "ezuri-renegade-leader" },
   { name: "Sliver Hivelord",                 slug: "sliver-hivelord" },
   { name: "Sliver Queen",                    slug: "sliver-queen" },
-  { name: "Vial Smasher the Fierce",         slug: "vial-smasher-the-fierce" },
   { name: "Phenax, God of Deception",        slug: "phenax-god-of-deception" },
   { name: "Kroxa, Titan of Death's Hunger",  slug: "kroxa-titan-of-deaths-hunger" },
   // Commander Legends (2020)
-  { name: "Akiri, Fearless Voyager",         slug: "akiri-fearless-voyager" },
-  { name: "Malcolm, Keen-Eyed Navigator",    slug: "malcolm-keen-eyed-navigator" },
   { name: "Piru, the Volatile",              slug: "piru-the-volatile" },
-  { name: "Akroma, Vision of Ixidor",        slug: "akroma-vision-of-ixidor" },
-  { name: "Obuun, Mul Daya Ancestor",        slug: "obuun-mul-daya-ancestor" },
   { name: "Amareth, the Lustrous",           slug: "amareth-the-lustrous" },
   { name: "Hamza, Guardian of Arashin",      slug: "hamza-guardian-of-arashin" },
-  { name: "Kodama of the East Tree",         slug: "kodama-of-the-east-tree" },
-  { name: "Kraum, Ludevic's Opus",           slug: "kraum-ludevics-opus" },
   // Kaldheim (2021)
   { name: "Esika, God of the Tree",          slug: "esika-god-of-the-tree" },
   { name: "Jorn, God of Winter",             slug: "jorn-god-of-winter" },
@@ -264,7 +287,7 @@ async function fetchCommanderPool() {
           if (!card.name) continue;
           const cardUrl = card.url || card.href || '';
           const match = cardUrl.match(/\/commanders\/([^/?#]+)/);
-          if (match) pool.push({ name: card.name, slug: match[1] });
+          if (match && !PARTNER_SLUGS.has(match[1])) pool.push({ name: card.name, slug: match[1] });
         }
       }
     }
