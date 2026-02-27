@@ -752,10 +752,10 @@ document.getElementById('btn-share').addEventListener('click', () => {
   const text = `MTG Cascade 🔥 Best streak: ${bestStreak}${commanderNote}\nhttps://mcgeever1.github.io/mtg-cascade/`;
   navigator.clipboard.writeText(text).then(() => {
     const btn = document.getElementById('btn-share');
-    btn.innerHTML = '✓';
+    btn.textContent = 'Copied!';
     btn.classList.add('copied');
     setTimeout(() => {
-      btn.innerHTML = '<img src="share.png" class="share-icon" alt="share">';
+      btn.textContent = '⬆';
       btn.classList.remove('copied');
     }, 2000);
   });
