@@ -267,10 +267,20 @@ html, body {
   width: 100%;
   /* Lock to MTG card aspect ratio so the full card is always visible */
   aspect-ratio: 488 / 680;
-  max-height: calc(100vh - 230px);
+  /* 340px accounts for all fixed UI: header + prompt + difficulty + feedback + key-hints */
+  max-height: calc(100vh - 340px);
   border-radius: clamp(6px, 1vw, 12px);
   overflow: hidden;
   background: transparent;
+}
+
+/* Tighten spacing on short viewports so cards never get clipped */
+@media (max-height: 700px) {
+  .prompt        { padding: 6px 24px 6px; }
+  .commander-img { width: 40px; height: 56px; }
+  .difficulty-bar { padding: 3px 24px; }
+  .feedback-bar  { min-height: 38px; padding: 5px 24px; }
+  .key-hints     { padding: 3px; }
 }
 
 .card-img {
