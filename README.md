@@ -2,7 +2,7 @@
 
 Guess which card sees more play in a given commander's decks.
 
-**[Play here →](https://mcgeever1.github.io/mtg-cascade/)**
+**[Play here *](https://mcgeever1.github.io/mtg-cascade/)**
 
 ---
 
