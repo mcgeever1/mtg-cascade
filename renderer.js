@@ -145,7 +145,6 @@ const COMMANDERS = [
   { name: "Selvala, Explorer Returned",      slug: "selvala-explorer-returned" },
   { name: "Titania, Protector of Argoth",    slug: "titania-protector-of-argoth" },
   { name: "Ezuri, Renegade Leader",          slug: "ezuri-renegade-leader" },
-  { name: "Sliver Overlord",                 slug: "sliver-overlord" },
   { name: "Sliver Hivelord",                 slug: "sliver-hivelord" },
   { name: "Sliver Queen",                    slug: "sliver-queen" },
   { name: "Vial Smasher the Fierce",         slug: "vial-smasher-the-fierce" },
@@ -164,7 +163,6 @@ const COMMANDERS = [
   // Kaldheim (2021)
   { name: "Esika, God of the Tree",          slug: "esika-god-of-the-tree" },
   { name: "Jorn, God of Winter",             slug: "jorn-god-of-winter" },
-  { name: "Birgi, God of Storytelling",      slug: "birgi-god-of-storytelling" },
   { name: "Aegar, the Freezing Flame",       slug: "aegar-the-freezing-flame" },
   { name: "Svella, Ice Shaper",              slug: "svella-ice-shaper" },
   // Strixhaven / C21 (2021)
@@ -289,6 +287,7 @@ let currentCommander = null;
 let cardPool = [];
 let roundData = null;       // { a, b } card objects
 let answered = false;
+let lastAnswerCorrect = false;
 let autoAdvanceTimer = null;
 let shuffledQueue = [];
 let usedCardPairs = new Set();
@@ -552,6 +551,7 @@ function handlePick(side) {
   const isCorrect = pickedCard.name === winner.name;
 
   if (isCorrect) {
+    lastAnswerCorrect = true;
     streak++;
     if (streak > bestStreak) {
       bestStreak = streak;
@@ -564,6 +564,7 @@ function handlePick(side) {
     // Correct: stay on same commander, advance to next round
     autoAdvanceTimer = setTimeout(() => nextRound(), 2000);
   } else {
+    lastAnswerCorrect = false;
     streak = 0;
     updateStreakDisplay();
     showFeedback(false, leftCard, rightCard, winner);
@@ -735,8 +736,8 @@ document.addEventListener('keydown', (e) => {
       break;
     case 'Enter':
     case ' ':
-      // Skip ahead only on correct answers (wrong triggers commander load, not manual skip)
-      if (answered && autoAdvanceTimer) {
+      // Only skip ahead on correct answers; wrong answers must wait for commander reload
+      if (answered && lastAnswerCorrect && autoAdvanceTimer) {
         clearTimeout(autoAdvanceTimer);
         autoAdvanceTimer = null;
         nextRound();
