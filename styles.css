@@ -518,9 +518,11 @@ kbd {
   cursor: zoom-in;
 }
 
-/* ── Touch devices: hide desktop-only keyboard hints ─────────────────────── */
+/* ── Touch devices: hide keyboard hints, enlarge commander UI ────────────── */
 @media (hover: none) and (pointer: coarse) {
   .key-hints { display: none; }
+  .commander-name { font-size: 18px; }
+  .btn-new-commander { width: 40px; height: 40px; font-size: 20px; }
 }
 
 /* ── Share button ────────────────────────────────────────────────────────── */
@@ -529,16 +531,26 @@ kbd {
   border: 1px solid var(--border);
   color: var(--muted);
   border-radius: 6px;
-  padding: 3px 8px;
+  padding: 5px 6px;
   font-size: 11px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: color 0.15s, border-color 0.15s;
 }
 .share-btn:hover {
-  color: var(--text);
   border-color: var(--accent);
 }
 .share-btn.copied {
   color: #22c55e;
   border-color: #22c55e;
 }
+.share-icon {
+  width: 14px;
+  height: 14px;
+  filter: brightness(0) invert(1);
+  opacity: 0.5;
+  display: block;
+}
+.share-btn:hover .share-icon { opacity: 0.9; }
