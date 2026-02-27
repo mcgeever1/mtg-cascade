@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cascade</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="header-left">
+        <span class="logo-icon">⚔</span>
+        <span class="logo-text">Cascade</span>
+      </div>
+      <div class="header-stats">
+        <div class="hstat hstat-streak" id="hstat-streak">
+          <span class="streak-flame" id="streak-flame"></span>
+          <span class="hstat-value" id="streak">0</span>
+          <span class="hstat-label">streak</span>
+        </div>
+        <div class="hstat hstat-best" title="" id="hstat-best">
+          <span class="hstat-label">Best</span>
+          <span class="hstat-value" id="best-streak">0</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Loading screen -->
+    <div class="loading-screen" id="loading-screen">
+      <div class="loading-spinner"></div>
+      <div class="loading-text" id="loading-text">Fetching deck data from EDHREC…</div>
+    </div>
+
+    <!-- Error screen -->
+    <div class="error-screen" id="error-screen" style="display:none">
+      <div class="error-icon">⚠</div>
+      <div class="error-msg" id="error-msg">Failed to load data.</div>
+      <button class="btn-retry" id="btn-retry">Try Again</button>
+    </div>
+
+    <!-- Game content -->
+    <div class="game" id="game" style="display:none">
+
+      <!-- Question prompt -->
+      <div class="prompt">
+        <div class="prompt-label">Which card sees more play in decks with…</div>
+        <div class="commander-display" id="commander-display">
+          <img class="commander-img" id="commander-img" src="" alt="">
+          <div class="commander-info">
+            <div class="commander-name" id="commander-name">Commander</div>
+            <div class="commander-meta" id="commander-meta"></div>
+          </div>
+          <button class="btn-new-commander" id="btn-new-commander" title="Try a different commander">⟳</button>
+        </div>
+      </div>
+
+      <!-- Difficulty indicator -->
+      <div class="difficulty-bar">
+        <span id="difficulty-badge">Easy</span>
+      </div>
+
+      <!-- Comparison cards -->
+      <div class="comparison" id="comparison">
+        <div class="card-option" id="option-a" data-side="a">
+          <div class="card-img-wrap">
+            <img class="card-img" id="img-a" src="" alt="" draggable="false">
+            <div class="result-overlay" id="overlay-a">
+              <div class="result-icon" id="icon-a"></div>
+              <div class="result-pct" id="pct-a"></div>
+              <div class="result-count" id="count-a"></div>
+            </div>
+          </div>
+          <div class="card-label">
+            <span class="card-name" id="name-a">…</span>
+          </div>
+        </div>
+
+        <div class="vs-column">
+          <div class="vs-badge">VS</div>
+        </div>
+
+        <div class="card-option" id="option-b" data-side="b">
+          <div class="card-img-wrap">
+            <img class="card-img" id="img-b" src="" alt="" draggable="false">
+            <div class="result-overlay" id="overlay-b">
+              <div class="result-icon" id="icon-b"></div>
+              <div class="result-pct" id="pct-b"></div>
+              <div class="result-count" id="count-b"></div>
+            </div>
+          </div>
+          <div class="card-label">
+            <span class="card-name" id="name-b">…</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feedback bar -->
+      <div class="feedback-bar" id="feedback-bar">
+        <div class="feedback-text" id="feedback-text"></div>
+        <div class="feedback-sub" id="feedback-sub"></div>
+      </div>
+
+      <!-- Key hints -->
+      <div class="key-hints">
+        <kbd>A</kbd> / <kbd>←</kbd> left &nbsp;·&nbsp; <kbd>D</kbd> / <kbd>→</kbd> right
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <img class="lightbox-img" id="lightbox-img" src="" alt="">
+    <div class="lightbox-close" id="lightbox-close">✕</div>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>
