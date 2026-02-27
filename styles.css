@@ -31,6 +31,7 @@ html, body {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  height: 100dvh; /* dvh accounts for mobile browser chrome (URL bar, nav bar) */
 }
 
 /* ── Header ──────────────────────────────────────────────────────────────── */
@@ -269,6 +270,7 @@ html, body {
   aspect-ratio: 488 / 680;
   /* 380px accounts for all fixed UI + bottom breathing room */
   max-height: calc(100vh - 380px);
+  max-height: calc(100dvh - 380px);
   border-radius: clamp(6px, 1vw, 12px);
   overflow: hidden;
   background: transparent;
@@ -523,7 +525,22 @@ kbd {
   .key-hints { display: none; }
   .commander-name { font-size: 18px; }
   .btn-new-commander { width: 40px; height: 40px; font-size: 20px; }
-  .feedback-bar { margin-bottom: 1em; }
+
+  /* Pin feedback bar to bottom of viewport — avoids it being cut off by browser chrome */
+  .feedback-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--bg);
+    padding-bottom: env(safe-area-inset-bottom);
+    z-index: 10;
+  }
+  .feedback-bar.correct { background: rgba(34, 197, 94, 0.12); }
+  .feedback-bar.wrong   { background: rgba(239, 68, 68, 0.12); }
+
+  /* Reserve space so the fixed bar doesn't overlap the comparison cards */
+  .game { padding-bottom: 60px; }
 }
 
 /* ── Share button ────────────────────────────────────────────────────────── */
