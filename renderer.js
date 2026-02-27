@@ -755,7 +755,7 @@ document.getElementById('btn-share').addEventListener('click', () => {
     btn.textContent = 'Copied!';
     btn.classList.add('copied');
     setTimeout(() => {
-      btn.textContent = 'Share';
+      btn.textContent = '⬆';
       btn.classList.remove('copied');
     }, 2000);
   });
