@@ -312,7 +312,7 @@ html, body {
 }
 
 .result-overlay.loser {
-  background: rgba(55, 55, 75, 0.72);
+  background: rgba(0, 0, 0, 0.72);
 }
 
 .result-overlay.picked-wrong {
