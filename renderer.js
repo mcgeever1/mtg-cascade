@@ -746,6 +746,21 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
+// ─── Share ────────────────────────────────────────────────────────────────────
+document.getElementById('btn-share').addEventListener('click', () => {
+  const commanderNote = bestStreakCommander ? ` (${bestStreakCommander})` : '';
+  const text = `MTG Cascade 🔥 Best streak: ${bestStreak}${commanderNote}\nhttps://mcgeever1.github.io/mtg-cascade/`;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('btn-share');
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'Share';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+});
+
 // ─── Init ─────────────────────────────────────────────────────────────────────
 (async () => {
   loadSavedScores();

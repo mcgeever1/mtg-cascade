@@ -517,3 +517,28 @@ kbd {
 .commander-img {
   cursor: zoom-in;
 }
+
+/* ── Touch devices: hide desktop-only keyboard hints ─────────────────────── */
+@media (hover: none) and (pointer: coarse) {
+  .key-hints { display: none; }
+}
+
+/* ── Share button ────────────────────────────────────────────────────────── */
+.share-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+.share-btn:hover {
+  color: var(--text);
+  border-color: var(--accent);
+}
+.share-btn.copied {
+  color: #22c55e;
+  border-color: #22c55e;
+}
