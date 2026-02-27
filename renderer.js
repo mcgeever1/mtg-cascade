@@ -25,56 +25,106 @@ const MANA_ROCKS = new Set([
 
 // Popular EDH commanders with verified EDHREC slugs
 const COMMANDERS = [
-  { name: "Atraxa, Praetors' Voice",      slug: "atraxa-praetors-voice" },
-  { name: "Edgar Markov",                  slug: "edgar-markov" },
-  { name: "The Ur-Dragon",                 slug: "the-ur-dragon" },
-  { name: "Yuriko, the Tiger's Shadow",    slug: "yuriko-the-tigers-shadow" },
-  { name: "Najeela, the Blade-Blossom",   slug: "najeela-the-blade-blossom" },
-  { name: "Krenko, Mob Boss",              slug: "krenko-mob-boss" },
-  { name: "Meren of Clan Nel Toth",        slug: "meren-of-clan-nel-toth" },
-  { name: "Breya, Etherium Shaper",        slug: "breya-etherium-shaper" },
-  { name: "Kaalia of the Vast",            slug: "kaalia-of-the-vast" },
-  { name: "Ghave, Guru of Spores",         slug: "ghave-guru-of-spores" },
-  { name: "Prossh, Skyraider of Kher",     slug: "prossh-skyraider-of-kher" },
-  { name: "The Gitrog Monster",            slug: "the-gitrog-monster" },
-  { name: "Sisay, Weatherlight Captain",  slug: "sisay-weatherlight-captain" },
-  { name: "Kenrith, the Returned King",    slug: "kenrith-the-returned-king" },
-  { name: "Shorikai, Genesis Engine",      slug: "shorikai-genesis-engine" },
-  { name: "Omnath, Locus of Creation",     slug: "omnath-locus-of-creation" },
-  { name: "Muldrotha, the Gravetide",      slug: "muldrotha-the-gravetide" },
-  { name: "Niv-Mizzet, Parun",            slug: "niv-mizzet-parun" },
-  { name: "Niv-Mizzet Reborn",            slug: "niv-mizzet-reborn" },
-  { name: "Korvold, Fae-Cursed King",      slug: "korvold-fae-cursed-king" },
-  { name: "Yarok, the Desecrated",         slug: "yarok-the-desecrated" },
-  { name: "The Scarab God",                slug: "the-scarab-god" },
-  { name: "Yawgmoth, Thran Physician",     slug: "yawgmoth-thran-physician" },
-  { name: "Urza, Lord High Artificer",     slug: "urza-lord-high-artificer" },
-  { name: "K'rrik, Son of Yawgmoth",      slug: "krrrik-son-of-yawgmoth" },
-  { name: "Inalla, Archmage Ritualist",    slug: "inalla-archmage-ritualist" },
-  { name: "Nekusar, the Mindrazer",        slug: "nekusar-the-mindrazer" },
-  { name: "Syr Konrad, the Grim",          slug: "syr-konrad-the-grim" },
-  { name: "Oloro, Ageless Ascetic",        slug: "oloro-ageless-ascetic" },
-  { name: "Marchesa, the Black Rose",      slug: "marchesa-the-black-rose" },
-  { name: "Wilhelt, the Rotcleaver",       slug: "wilhelt-the-rotcleaver" },
-  { name: "Tergrid, God of Fright",        slug: "tergrid-god-of-fright" },
-  { name: "Isshin, Two Heavens as One",    slug: "isshin-two-heavens-as-one" },
-  { name: "Lathril, Blade of the Elves",   slug: "lathril-blade-of-the-elves" },
-  { name: "Chulane, Teller of Tales",      slug: "chulane-teller-of-tales" },
-  { name: "Kinnan, Bonder Prodigy",        slug: "kinnan-bonder-prodigy" },
-  { name: "Jetmir, Nexus of Revels",       slug: "jetmir-nexus-of-revels" },
-  { name: "Kykar, Wind's Fury",            slug: "kykar-winds-fury" },
-  { name: "Animar, Soul of Elements",      slug: "animar-soul-of-elements" },
-  { name: "Zacama, Primal Calamity",       slug: "zacama-primal-calamity" },
-  { name: "Gishath, Sun's Avatar",         slug: "gishath-suns-avatar" },
-  { name: "Toxrill, the Corrosive",        slug: "toxrill-the-corrosive" },
-  { name: "Anhelo, the Painter",           slug: "anhelo-the-painter" },
-  { name: "Tymna the Weaver",             slug: "tymna-the-weaver" },
-  { name: "Thrasios, Triton Hero",         slug: "thrasios-triton-hero" },
-  { name: "Grand Arbiter Augustin IV",     slug: "grand-arbiter-augustin-iv" },
-  { name: "Teferi, Temporal Archmage",     slug: "teferi-temporal-archmage" },
-  { name: "Elsha of the Infinite",         slug: "elsha-of-the-infinite" },
-  { name: "Omnath, Locus of Mana",         slug: "omnath-locus-of-mana" },
-  { name: "Daretti, Scrap Savant",         slug: "daretti-scrap-savant" },
+  { name: "Atraxa, Praetors' Voice",        slug: "atraxa-praetors-voice" },
+  { name: "Edgar Markov",                    slug: "edgar-markov" },
+  { name: "The Ur-Dragon",                   slug: "the-ur-dragon" },
+  { name: "Yuriko, the Tiger's Shadow",      slug: "yuriko-the-tigers-shadow" },
+  { name: "Najeela, the Blade-Blossom",      slug: "najeela-the-blade-blossom" },
+  { name: "Krenko, Mob Boss",                slug: "krenko-mob-boss" },
+  { name: "Meren of Clan Nel Toth",          slug: "meren-of-clan-nel-toth" },
+  { name: "Breya, Etherium Shaper",          slug: "breya-etherium-shaper" },
+  { name: "Kaalia of the Vast",              slug: "kaalia-of-the-vast" },
+  { name: "Ghave, Guru of Spores",           slug: "ghave-guru-of-spores" },
+  { name: "Prossh, Skyraider of Kher",       slug: "prossh-skyraider-of-kher" },
+  { name: "The Gitrog Monster",              slug: "the-gitrog-monster" },
+  { name: "Sisay, Weatherlight Captain",     slug: "sisay-weatherlight-captain" },
+  { name: "Kenrith, the Returned King",      slug: "kenrith-the-returned-king" },
+  { name: "Shorikai, Genesis Engine",        slug: "shorikai-genesis-engine" },
+  { name: "Omnath, Locus of Creation",       slug: "omnath-locus-of-creation" },
+  { name: "Muldrotha, the Gravetide",        slug: "muldrotha-the-gravetide" },
+  { name: "Niv-Mizzet, Parun",              slug: "niv-mizzet-parun" },
+  { name: "Niv-Mizzet Reborn",              slug: "niv-mizzet-reborn" },
+  { name: "Korvold, Fae-Cursed King",        slug: "korvold-fae-cursed-king" },
+  { name: "Yarok, the Desecrated",           slug: "yarok-the-desecrated" },
+  { name: "The Scarab God",                  slug: "the-scarab-god" },
+  { name: "Yawgmoth, Thran Physician",       slug: "yawgmoth-thran-physician" },
+  { name: "Urza, Lord High Artificer",       slug: "urza-lord-high-artificer" },
+  { name: "K'rrik, Son of Yawgmoth",        slug: "krrik-son-of-yawgmoth" },
+  { name: "Inalla, Archmage Ritualist",      slug: "inalla-archmage-ritualist" },
+  { name: "Nekusar, the Mindrazer",          slug: "nekusar-the-mindrazer" },
+  { name: "Syr Konrad, the Grim",            slug: "syr-konrad-the-grim" },
+  { name: "Oloro, Ageless Ascetic",          slug: "oloro-ageless-ascetic" },
+  { name: "Marchesa, the Black Rose",        slug: "marchesa-the-black-rose" },
+  { name: "Wilhelt, the Rotcleaver",         slug: "wilhelt-the-rotcleaver" },
+  { name: "Tergrid, God of Fright",          slug: "tergrid-god-of-fright" },
+  { name: "Isshin, Two Heavens as One",      slug: "isshin-two-heavens-as-one" },
+  { name: "Lathril, Blade of the Elves",     slug: "lathril-blade-of-the-elves" },
+  { name: "Chulane, Teller of Tales",        slug: "chulane-teller-of-tales" },
+  { name: "Kinnan, Bonder Prodigy",          slug: "kinnan-bonder-prodigy" },
+  { name: "Jetmir, Nexus of Revels",         slug: "jetmir-nexus-of-revels" },
+  { name: "Kykar, Wind's Fury",              slug: "kykar-winds-fury" },
+  { name: "Animar, Soul of Elements",        slug: "animar-soul-of-elements" },
+  { name: "Zacama, Primal Calamity",         slug: "zacama-primal-calamity" },
+  { name: "Gishath, Sun's Avatar",           slug: "gishath-suns-avatar" },
+  { name: "Toxrill, the Corrosive",          slug: "toxrill-the-corrosive" },
+  { name: "Anhelo, the Painter",             slug: "anhelo-the-painter" },
+  { name: "Tymna the Weaver",                slug: "tymna-the-weaver" },
+  { name: "Thrasios, Triton Hero",           slug: "thrasios-triton-hero" },
+  { name: "Grand Arbiter Augustin IV",       slug: "grand-arbiter-augustin-iv" },
+  { name: "Teferi, Temporal Archmage",       slug: "teferi-temporal-archmage" },
+  { name: "Elsha of the Infinite",           slug: "elsha-of-the-infinite" },
+  { name: "Omnath, Locus of Mana",           slug: "omnath-locus-of-mana" },
+  { name: "Daretti, Scrap Savant",           slug: "daretti-scrap-savant" },
+  { name: "Miirym, Sentinel Wyrm",           slug: "miirym-sentinel-wyrm" },
+  { name: "Sauron, the Dark Lord",           slug: "sauron-the-dark-lord" },
+  { name: "Jodah, the Unifier",              slug: "jodah-the-unifier" },
+  { name: "Giada, Font of Hope",             slug: "giada-font-of-hope" },
+  { name: "Prosper, Tome-Bound",             slug: "prosper-tome-bound" },
+  { name: "Kess, Dissident Mage",            slug: "kess-dissident-mage" },
+  { name: "Sliver Overlord",                 slug: "sliver-overlord" },
+  { name: "The Locust God",                  slug: "the-locust-god" },
+  { name: "Arcades, the Strategist",         slug: "arcades-the-strategist" },
+  { name: "Purphoros, God of the Forge",     slug: "purphoros-god-of-the-forge" },
+  { name: "Aminatou, the Fateshifter",       slug: "aminatou-the-fateshifter" },
+  { name: "Brago, King Eternal",             slug: "brago-king-eternal" },
+  { name: "Zur the Enchanter",               slug: "zur-the-enchanter" },
+  { name: "Mizzix of the Izmagnus",          slug: "mizzix-of-the-izmagnus" },
+  { name: "Talrand, Sky Summoner",           slug: "talrand-sky-summoner" },
+  { name: "Narset, Enlightened Master",      slug: "narset-enlightened-master" },
+  { name: "Sidisi, Brood Tyrant",            slug: "sidisi-brood-tyrant" },
+  { name: "Tasigur, the Golden Fang",        slug: "tasigur-the-golden-fang" },
+  { name: "Maelstrom Wanderer",              slug: "maelstrom-wanderer" },
+  { name: "Xenagos, God of Revels",          slug: "xenagos-god-of-revels" },
+  { name: "Riku of Two Reflections",         slug: "riku-of-two-reflections" },
+  { name: "Hapatra, Vizier of Poisons",      slug: "hapatra-vizier-of-poisons" },
+  { name: "Volo, Guide to Monsters",         slug: "volo-guide-to-monsters" },
+  { name: "Wulfgar of Icewind Dale",         slug: "wulfgar-of-icewind-dale" },
+  { name: "Rhys the Redeemed",               slug: "rhys-the-redeemed" },
+  { name: "Magda, Brazen Outlaw",            slug: "magda-brazen-outlaw" },
+  { name: "Olivia, Crimson Bride",           slug: "olivia-crimson-bride" },
+  { name: "Feather, the Redeemed",           slug: "feather-the-redeemed" },
+  { name: "Aurelia, the Warleader",          slug: "aurelia-the-warleader" },
+  { name: "Neheb, the Eternal",              slug: "neheb-the-eternal" },
+  { name: "Kynaios and Tiro of Meletis",     slug: "kynaios-and-tiro-of-meletis" },
+  { name: "Sythis, Harvest's Hand",          slug: "sythis-harvests-hand" },
+  { name: "Aesi, Tyrant of Gyre Strait",     slug: "aesi-tyrant-of-gyre-strait" },
+  { name: "Tatyova, Benthic Druid",          slug: "tatyova-benthic-druid" },
+  { name: "Jhoira, Weatherlight Captain",    slug: "jhoira-weatherlight-captain" },
+  { name: "Varina, Lich Queen",              slug: "varina-lich-queen" },
+  { name: "Birgi, God of Storytelling",      slug: "birgi-god-of-storytelling" },
+  { name: "Koma, Cosmos Serpent",            slug: "koma-cosmos-serpent" },
+  { name: "Pantlaza, Sun-Favored",           slug: "pantlaza-sun-favored" },
+  { name: "Ziatora, the Incinerator",        slug: "ziatora-the-incinerator" },
+  { name: "Olivia Voldaren",                 slug: "olivia-voldaren" },
+  { name: "Sen Triplets",                    slug: "sen-triplets" },
+  { name: "Obeka, Brute Chronologist",       slug: "obeka-brute-chronologist" },
+  { name: "Thalia and The Gitrog Monster",   slug: "thalia-and-the-gitrog-monster" },
+  { name: "Heliod, Sun-Crowned",             slug: "heliod-sun-crowned" },
+  { name: "Omnath, Locus of Rage",           slug: "omnath-locus-of-rage" },
+  { name: "Azusa, Lost but Seeking",         slug: "azusa-lost-but-seeking" },
+  { name: "Ghired, Conclave Exile",          slug: "ghired-conclave-exile" },
+  { name: "Syr Gwyn, Hero of Ashvale",       slug: "syr-gwyn-hero-of-ashvale" },
+  { name: "Lathiel, the Bounteous Dawn",     slug: "lathiel-the-bounteous-dawn" },
 ];
 
 // ─── Difficulty ───────────────────────────────────────────────────────────────
@@ -103,29 +153,32 @@ function getDifficultyLevel(s) {
 let commanderPool = [...COMMANDERS];
 
 async function fetchCommanderPool() {
+  // The main commanders.json returns 403 from browsers; try paginated endpoints instead.
+  const pool = [];
   try {
-    const res = await fetch(`${EDHREC_BASE}/pages/commanders.json`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    const json_dict = data?.container?.json_dict || data;
-    const cardlists = json_dict?.cardlists || json_dict?.card_lists || [];
-
-    const pool = [];
-    for (const section of cardlists) {
-      for (const card of (section.cardviews || section.cards || [])) {
-        if (!card.name) continue;
-        const url = card.url || card.href || '';
-        const match = url.match(/\/commanders\/([^/?#]+)/);
-        if (match) pool.push({ name: card.name, slug: match[1] });
+    for (let page = 0; page <= 2; page++) {
+      const res = await fetch(`${EDHREC_BASE}/pages/commanders/year-past2years-${page}.json`);
+      if (!res.ok) break;
+      const data = await res.json();
+      const json_dict = data?.container?.json_dict || data;
+      const cardlists = json_dict?.cardlists || json_dict?.card_lists || [];
+      for (const section of cardlists) {
+        for (const card of (section.cardviews || section.cards || [])) {
+          if (!card.name) continue;
+          const cardUrl = card.url || card.href || '';
+          const match = cardUrl.match(/\/commanders\/([^/?#]+)/);
+          if (match) pool.push({ name: card.name, slug: match[1] });
+        }
       }
-    }
-
-    if (pool.length >= 20) {
-      console.log(`Dynamic commander pool: ${pool.length} commanders`);
-      commanderPool = pool;
     }
   } catch (err) {
     console.warn('Commander list fetch failed, using built-in list:', err.message);
+  }
+
+  if (pool.length >= 20) {
+    console.log(`Dynamic commander pool: ${pool.length} commanders`);
+    commanderPool = pool;
+    shuffledQueue = [];
   }
 }
 
@@ -138,7 +191,7 @@ let cardPool = [];
 let roundData = null;       // { a, b } card objects
 let answered = false;
 let autoAdvanceTimer = null;
-let usedCommanderSlugs = new Set();
+let shuffledQueue = [];
 let usedCardPairs = new Set();
 
 // ─── DOM ─────────────────────────────────────────────────────────────────────
@@ -281,12 +334,14 @@ async function loadCommander(commander) {
 }
 
 function pickRandomCommander() {
-  const available = commanderPool.filter(c => !usedCommanderSlugs.has(c.slug));
-  if (available.length === 0) {
-    usedCommanderSlugs.clear();
-    return commanderPool[Math.floor(Math.random() * commanderPool.length)];
+  if (shuffledQueue.length === 0) {
+    shuffledQueue = [...commanderPool];
+    for (let i = shuffledQueue.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffledQueue[i], shuffledQueue[j]] = [shuffledQueue[j], shuffledQueue[i]];
+    }
   }
-  return available[Math.floor(Math.random() * available.length)];
+  return shuffledQueue.pop();
 }
 
 function pickPair() {
@@ -417,9 +472,7 @@ function handlePick(side) {
     revealResults(leftCard, rightCard, winner, false, side);
     // Wrong: load a new commander after showing the result
     autoAdvanceTimer = setTimeout(() => {
-      const cmd = pickRandomCommander();
-      usedCommanderSlugs.add(cmd.slug);
-      loadCommander(cmd);
+      loadCommander(pickRandomCommander());
     }, 2200);
   }
 }
@@ -560,9 +613,7 @@ optionB.addEventListener('click', () => handlePick('b'));
 
 document.getElementById('btn-new-commander').addEventListener('click', () => {
   if (autoAdvanceTimer) clearTimeout(autoAdvanceTimer);
-  const cmd = pickRandomCommander();
-  usedCommanderSlugs.add(cmd.slug);
-  loadCommander(cmd);
+  loadCommander(pickRandomCommander());
 });
 
 document.getElementById('btn-retry').addEventListener('click', () => {
@@ -600,7 +651,5 @@ document.addEventListener('keydown', (e) => {
   loadSavedScores();
   showLoading('Fetching commander list from EDHREC…');
   await fetchCommanderPool();
-  const cmd = pickRandomCommander();
-  usedCommanderSlugs.add(cmd.slug);
-  await loadCommander(cmd);
+  await loadCommander(pickRandomCommander());
 })();
