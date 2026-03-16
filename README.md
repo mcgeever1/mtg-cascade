@@ -12,4 +12,8 @@ Pick between two cards — whichever shows up in more EDHREC decks wins. Gets ha
 
 Deckbuilding data pulled live from [EDHREC API](https://edhrec.com). Card data pulled from [Scryfall API](https://scryfall.com/).
 
+A more in-depth explanation of the difficulty scaling, as well as edge cases available [here.](dummylink)
+
 Any suggestions? email me here: [mcgeever.e@northeastern.edu](mailto:mcgeever.e@northeastern.edu)
+
+MIT Licensed
