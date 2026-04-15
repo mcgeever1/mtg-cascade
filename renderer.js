@@ -200,7 +200,8 @@ const COMMANDERS = [
   { name: "Galea, Kindler of Hope",          slug: "galea-kindler-of-hope" },
   { name: "Sefris of the Hidden Ways",       slug: "sefris-of-the-hidden-ways" },
   { name: "Vrondiss, Rage of Ancients",      slug: "vrondiss-rage-of-ancients" },
-  { name: "Lolth, Spider Queen",             slug: "lolth-spider-queen" },
+  // Lolth, Spider Queen — EDHREC 403 (no commander page served)
+  // { name: "Lolth, Spider Queen",             slug: "lolth-spider-queen" },
   { name: "Tasha, the Witch Queen",          slug: "tasha-the-witch-queen" },
   { name: "Baeloth Barrityl, Entertainer",   slug: "baeloth-barrityl-entertainer" },
   { name: "Firkraag, Cunning Instigator",    slug: "firkraag-cunning-instigator" },
@@ -213,7 +214,8 @@ const COMMANDERS = [
   { name: "Liesa, Forgotten Archangel",      slug: "liesa-forgotten-archangel" },
   // Neon Dynasty / New Capenna / CLB (2022)
   { name: "Hinata, Dawn-Crowned",            slug: "hinata-dawn-crowned" },
-  { name: "Kaito Shizuki",                   slug: "kaito-shizuki" },
+  // Kaito Shizuki removed — EDHREC 403 (no commander page)
+  // { name: "Kaito Shizuki",                   slug: "kaito-shizuki" },
   { name: "Evelyn, the Covetous",            slug: "evelyn-the-covetous" },
   { name: "Mahadi, Emporium Master",         slug: "mahadi-emporium-master" },
   { name: "Rigo, Streetwise Mentor",         slug: "rigo-streetwise-mentor" },
@@ -244,7 +246,7 @@ const COMMANDERS = [
   { name: "Massacre Girl, Known Killer",     slug: "massacre-girl-known-killer" },
   { name: "Marchesa, Dealer of Death",       slug: "marchesa-dealer-of-death" },
   { name: "Tivit, Seller of Secrets",        slug: "tivit-seller-of-secrets" },
-  { name: "Minsc & Boo, Timeless Heroes",    slug: "minsc-and-boo-timeless-heroes" },
+  { name: "Minsc & Boo, Timeless Heroes",    slug: "minsc-boo-timeless-heroes" },
 ];
 
 // ─── Difficulty ───────────────────────────────────────────────────────────────
@@ -273,12 +275,15 @@ function getDifficultyLevel(s) {
 let commanderPool = [...COMMANDERS];
 
 async function fetchCommanderPool() {
-  // The main commanders.json returns 403 from browsers; try paginated endpoints instead.
+  // week.json and month.json return the top 100 trending commanders each — both work from browsers.
+  // year-past2years and commanders.json return 403, so we skip them.
   const pool = [];
-  try {
-    for (let page = 0; page <= 2; page++) {
-      const res = await fetch(`${EDHREC_BASE}/pages/commanders/year-past2years-${page}.json`);
-      if (!res.ok) break;
+  const seen = new Set();
+
+  async function fetchList(endpoint) {
+    try {
+      const res = await fetch(`${EDHREC_BASE}/pages/commanders/${endpoint}`);
+      if (!res.ok) return;
       const data = await res.json();
       const json_dict = data?.container?.json_dict || data;
       const cardlists = json_dict?.cardlists || json_dict?.card_lists || [];
@@ -287,18 +292,26 @@ async function fetchCommanderPool() {
           if (!card.name) continue;
           const cardUrl = card.url || card.href || '';
           const match = cardUrl.match(/\/commanders\/([^/?#]+)/);
-          if (match && !PARTNER_SLUGS.has(match[1])) pool.push({ name: card.name, slug: match[1] });
+          if (match && !PARTNER_SLUGS.has(match[1]) && !seen.has(match[1])) {
+            seen.add(match[1]);
+            pool.push({ name: card.name, slug: match[1] });
+          }
         }
       }
+    } catch (err) {
+      console.warn(`Commander list fetch failed for ${endpoint}:`, err.message);
     }
-  } catch (err) {
-    console.warn('Commander list fetch failed, using built-in list:', err.message);
   }
+
+  // Fetch week and month in parallel for speed
+  await Promise.all([fetchList('week.json'), fetchList('month.json')]);
 
   if (pool.length >= 20) {
     console.log(`Dynamic commander pool: ${pool.length} commanders`);
     commanderPool = pool;
     shuffledQueue = [];
+  } else {
+    console.warn('Dynamic fetch returned too few commanders, using built-in list');
   }
 }
 
@@ -313,8 +326,10 @@ let answered = false;
 let lastAnswerCorrect = false;
 let autoAdvanceTimer = null;
 let shuffledQueue = [];
+let sessionUsedSlugs = new Set();   // commanders seen this session — reset only when pool exhausted
 let usedCardPairs = new Set();
 let recentCardNames = []; // sliding window: last 2 turns' card names [[nameA,nameB], ...]
+let prefetchedNext = null; // { commander, cards, cmdCard } — fetched in background after each load
 
 // ─── DOM ─────────────────────────────────────────────────────────────────────
 const loadingScreen  = document.getElementById('loading-screen');
@@ -419,14 +434,44 @@ function getCommanderCard(data) {
   return data?.container?.json_dict?.card || data?.card || null;
 }
 
+// ─── Prefetch ─────────────────────────────────────────────────────────────────
+// Silently fetches the next commander's data in the background so the transition
+// after a wrong answer is instant instead of showing a loading screen.
+async function prefetchNextCommander() {
+  const next = pickRandomCommander();
+  try {
+    const data = await fetchCommanderData(next.slug);
+    const cards = parseCardPool(data);
+    if (cards.length < 10) throw new Error('too few cards');
+    prefetchedNext = { commander: next, cards, cmdCard: getCommanderCard(data) };
+  } catch {
+    // Prefetch failed silently — remove from pool so it's not retried
+    commanderPool = commanderPool.filter(c => c.slug !== next.slug);
+    shuffledQueue  = shuffledQueue.filter(c => c.slug !== next.slug);
+    prefetchedNext = null;
+  }
+}
+
 // ─── Game Logic ───────────────────────────────────────────────────────────────
 async function loadCommander(commander) {
-  showLoading(`Loading decks for ${commander.name}…`);
+  // Use prefetched data if it matches, otherwise fetch now
+  const cached = prefetchedNext?.commander.slug === commander.slug ? prefetchedNext : null;
+  prefetchedNext = null;
+
+  if (!cached) {
+    showLoading(`Loading decks for ${commander.name}…`);
+  }
   hideError();
 
   try {
-    const data = await fetchCommanderData(commander.slug);
-    const cards = parseCardPool(data);
+    let cards, cmdCard;
+    if (cached) {
+      ({ cards, cmdCard } = cached);
+    } else {
+      const data = await fetchCommanderData(commander.slug);
+      cards = parseCardPool(data);
+      cmdCard = getCommanderCard(data);
+    }
 
     if (cards.length < 10) {
       throw new Error(`Not enough card data for ${commander.name} (got ${cards.length} cards)`);
@@ -438,7 +483,6 @@ async function loadCommander(commander) {
     recentCardNames = [];
 
     // Set commander display
-    const cmdCard = getCommanderCard(data);
     const cmdImageUrl = getCommanderImageUrl(cmdCard)
       || `https://api.scryfall.com/cards/named?format=image&version=normal&exact=${encodeURIComponent(commander.name)}`;
 
@@ -448,23 +492,36 @@ async function loadCommander(commander) {
 
     showGame();
     nextRound();
+
+    // Kick off background prefetch for the next commander
+    prefetchNextCommander();
   } catch (err) {
     console.error(err);
-    // Remove this commander from the pool so we don't retry it this session
+    // Remove this commander from the pool and queue so we don't retry it this session
     commanderPool = commanderPool.filter(c => c.slug !== commander.slug);
+    shuffledQueue = shuffledQueue.filter(c => c.slug !== commander.slug);
     showError(`Couldn't load data for "${commander.name}". ${err.message}`);
   }
 }
 
 function pickRandomCommander() {
   if (shuffledQueue.length === 0) {
-    shuffledQueue = [...commanderPool];
+    // Only pick from commanders not yet seen this session
+    let available = commanderPool.filter(c => !sessionUsedSlugs.has(c.slug));
+    // Full cycle complete — start a fresh session cycle
+    if (available.length === 0) {
+      sessionUsedSlugs.clear();
+      available = [...commanderPool];
+    }
+    shuffledQueue = [...available];
     for (let i = shuffledQueue.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [shuffledQueue[i], shuffledQueue[j]] = [shuffledQueue[j], shuffledQueue[i]];
     }
   }
-  return shuffledQueue.pop();
+  const cmd = shuffledQueue.pop();
+  sessionUsedSlugs.add(cmd.slug);
+  return cmd;
 }
 
 function pickPair() {
@@ -607,9 +664,11 @@ function handlePick(side) {
     showFeedback(false, leftCard, rightCard, winner);
     saveScores();
     revealResults(leftCard, rightCard, winner, false, side);
-    // Wrong: load a new commander after showing the result
+    // Wrong: load a new commander after showing the result.
+    // Prefetch has already started; by the time the timer fires it's usually ready.
     autoAdvanceTimer = setTimeout(() => {
-      loadCommander(pickRandomCommander());
+      const next = prefetchedNext ? prefetchedNext.commander : pickRandomCommander();
+      loadCommander(next);
     }, 2200);
   }
 }
@@ -750,12 +809,13 @@ optionB.addEventListener('click', () => handlePick('b'));
 
 document.getElementById('btn-new-commander').addEventListener('click', () => {
   if (autoAdvanceTimer) clearTimeout(autoAdvanceTimer);
-  loadCommander(pickRandomCommander());
+  const next = prefetchedNext ? prefetchedNext.commander : pickRandomCommander();
+  loadCommander(next);
 });
 
 document.getElementById('btn-retry').addEventListener('click', () => {
-  const cmd = pickRandomCommander();
-  loadCommander(cmd);
+  const next = prefetchedNext ? prefetchedNext.commander : pickRandomCommander();
+  loadCommander(next);
 });
 
 document.addEventListener('keydown', (e) => {
