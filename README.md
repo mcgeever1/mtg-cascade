@@ -16,6 +16,5 @@ Deckbuilding data pulled live from [EDHREC API](https://edhrec.com). Card data p
 
 A more in-depth explanation of the difficulty scaling, as well as edge cases can be found in the technical breakdown available [here.](https://mcgeever1.github.io/projects/2-project)
 
-Any suggestions? email me here: [mcgeever.e@northeastern.edu](mailto:mcgeever.e@northeastern.edu)
 
 MIT Licensed
