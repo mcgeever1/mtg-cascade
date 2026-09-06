@@ -7,7 +7,7 @@
    serifs already on every machine; Georgia's weight and x-height land close
    enough. The real names lead each stack so an installed copy still wins. */
 :root {
-  --font-title: 'Beleren Bold', 'Beleren', Georgia, 'Times New Roman', serif;
+  --font-title: 'Beleren', Georgia, 'Times New Roman', serif;
   --font-body:  'MPlantin', 'Plantin', Georgia, 'Times New Roman', serif;
 
   --bg:        #0d0d1a;
