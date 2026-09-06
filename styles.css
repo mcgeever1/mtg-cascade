@@ -2,15 +2,12 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 /* ── Card typography ─────────────────────────────────────────────────────────
-   Real Magic cards set names and type lines in Beleren, and rules text in
-   Plantin. Both are proprietary and can't be shipped, so the free stand-ins
-   do the actual work: Cinzel for Beleren, PT Serif for Plantin. The real
-   names stay at the front of each stack so an installed copy still wins. */
+   Magic sets card names in Beleren and rules text in Plantin, both of them
+   proprietary serifs. Times New Roman is the plain stand-in — installed
+   everywhere, no web font to download, and close enough in feel. */
 :root {
-  --font-title: 'Beleren Bold', 'Beleren', 'Cinzel',
-                Palatino, 'Palatino Linotype', Georgia, serif;
-  --font-body:  'MPlantin', 'Plantin', 'PT Serif',
-                'Times New Roman', Times, Georgia, serif;
+  --font-title: 'Times New Roman', Times, serif;
+  --font-body:  'Times New Roman', Times, serif;
 
   --bg:        #0d0d1a;
   --surface:   #16162a;
@@ -65,9 +62,8 @@ html, body {
 .logo-icon { font-size: 20px; }
 .logo-text  {
   font-family: var(--font-title);
-  font-size: 19px;
+  font-size: 17px;
   font-weight: 700;
-  letter-spacing: 0.3px;
 }
 
 .header-stats {
@@ -219,9 +215,8 @@ html, body {
 
 .commander-name {
   font-family: var(--font-title);
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 700;
-  letter-spacing: 0.3px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -418,9 +413,8 @@ html, body {
 
 .card-name {
   font-family: var(--font-title);
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 600;
-  letter-spacing: 0.3px;
   color: var(--text);
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -545,7 +539,7 @@ kbd {
 /* ── Touch devices: hide keyboard hints, enlarge commander UI ────────────── */
 @media (hover: none) and (pointer: coarse) {
   .key-hints { display: none; }
-  .commander-name { font-size: 20px; }
+  .commander-name { font-size: 18px; }
   .btn-new-commander { width: 40px; height: 40px; font-size: 20px; }
 
   /* Pin feedback bar to bottom of viewport — avoids it being cut off by browser chrome */
