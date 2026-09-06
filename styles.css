@@ -2,12 +2,13 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 /* ── Card typography ─────────────────────────────────────────────────────────
-   Magic sets card names in Beleren and rules text in Plantin, both of them
-   proprietary serifs. Times New Roman is the plain stand-in — installed
-   everywhere, no web font to download, and close enough in feel. */
+   Magic sets card names in Beleren and rules text in Plantin — both serifs,
+   both proprietary. Rather than pull in a web font, fall back to the system
+   serifs already on every machine; Georgia's weight and x-height land close
+   enough. The real names lead each stack so an installed copy still wins. */
 :root {
-  --font-title: 'Times New Roman', Times, serif;
-  --font-body:  'Times New Roman', Times, serif;
+  --font-title: 'Beleren Bold', 'Beleren', Georgia, 'Times New Roman', serif;
+  --font-body:  'MPlantin', 'Plantin', Georgia, 'Times New Roman', serif;
 
   --bg:        #0d0d1a;
   --surface:   #16162a;
