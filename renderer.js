@@ -846,7 +846,7 @@ document.addEventListener('keydown', (e) => {
 // ─── Share ────────────────────────────────────────────────────────────────────
 document.getElementById('btn-share').addEventListener('click', () => {
   const commanderNote = bestStreakCommander ? ` (${bestStreakCommander})` : '';
-  const text = `MTG Cascade 🔥 Best streak: ${bestStreak}${commanderNote}\nhttps://mcgeever1.github.io/mtg-cascade/`;
+  const text = `Cascade 🔥 Best streak: ${bestStreak}${commanderNote}\nhttps://mcgeever1.github.io/mtg-cascade/`;
   navigator.clipboard.writeText(text).then(() => {
     const btn = document.getElementById('btn-share');
     btn.classList.add('copied');

@@ -1,4 +1,4 @@
-# MTG Cascade
+# Cascade
 
 Guess which card sees more play in a given commander's decks.
 
