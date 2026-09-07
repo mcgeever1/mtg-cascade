@@ -255,12 +255,13 @@ const COMMANDERS = [
 // minRatio/maxRatio: inclusion-rate ratio band — close pairs reserved for harder levels.
 // minInclusion: at least one card in the pair must exceed this inclusion rate,
 //   ensuring early rounds always feature a well-known, recognizable card.
+// color: VS Code syntax-token colours, matching the palette in styles.css.
 const DIFFICULTY_LEVELS = [
-  { minStreak: 0,  minRatio: 2.0,  maxRatio: Infinity, minInclusion: 0.30, label: 'Easy',      color: '#22c55e' },
-  { minStreak: 3,  minRatio: 1.5,  maxRatio: 2.0,      minInclusion: 0.15, label: 'Medium',    color: '#f59e0b' },
-  { minStreak: 6,  minRatio: 1.25, maxRatio: 1.5,      minInclusion: 0.08, label: 'Hard',      color: '#f97316' },
-  { minStreak: 10, minRatio: 1.12, maxRatio: 1.25,     minInclusion: 0.03, label: 'Expert',    color: '#ef4444' },
-  { minStreak: 15, minRatio: 1.0,  maxRatio: 1.12,     minInclusion: 0,    label: 'Nightmare', color: '#a855f7' },
+  { minStreak: 0,  minRatio: 2.0,  maxRatio: Infinity, minInclusion: 0.30, label: 'Easy',      color: '#89d185' },
+  { minStreak: 3,  minRatio: 1.5,  maxRatio: 2.0,      minInclusion: 0.15, label: 'Medium',    color: '#dcdcaa' },
+  { minStreak: 6,  minRatio: 1.25, maxRatio: 1.5,      minInclusion: 0.08, label: 'Hard',      color: '#ce9178' },
+  { minStreak: 10, minRatio: 1.12, maxRatio: 1.25,     minInclusion: 0.03, label: 'Expert',    color: '#f14c4c' },
+  { minStreak: 15, minRatio: 1.0,  maxRatio: 1.12,     minInclusion: 0,    label: 'Nightmare', color: '#c586c0' },
 ];
 
 function getDifficultyLevel(s) {
@@ -338,18 +339,18 @@ const errorScreen    = document.getElementById('error-screen');
 const errorMsg       = document.getElementById('error-msg');
 const gameEl         = document.getElementById('game');
 const streakEl       = document.getElementById('streak');
-const streakFlame    = document.getElementById('streak-flame');
 const bestStreakEl   = document.getElementById('best-streak');
 const hstatBest      = document.getElementById('hstat-best');
-const commanderImg   = document.getElementById('commander-img');
 const commanderName  = document.getElementById('commander-name');
 const commanderMeta  = document.getElementById('commander-meta');
+
+// There's no commander thumbnail any more, so the art URL is held here for the
+// lightbox instead of being read back off an <img>.
+let commanderImageUrl = '';
 const optionA        = document.getElementById('option-a');
 const optionB        = document.getElementById('option-b');
 const imgA           = document.getElementById('img-a');
 const imgB           = document.getElementById('img-b');
-const nameA          = document.getElementById('name-a');
-const nameB          = document.getElementById('name-b');
 const overlayA       = document.getElementById('overlay-a');
 const overlayB       = document.getElementById('overlay-b');
 const iconA          = document.getElementById('icon-a');
@@ -486,7 +487,7 @@ async function loadCommander(commander) {
     const cmdImageUrl = getCommanderImageUrl(cmdCard)
       || `https://api.scryfall.com/cards/named?format=image&version=normal&exact=${encodeURIComponent(commander.name)}`;
 
-    commanderImg.src = cmdImageUrl;
+    commanderImageUrl = cmdImageUrl;
     commanderName.textContent = commander.name;
     commanderMeta.textContent = `${cards.length} cards in pool`;
 
@@ -621,11 +622,12 @@ function nextRound() {
   imgB.style.opacity = '0';
   imgA.src = getImageUrl(left);
   imgB.src = getImageUrl(right);
+  // The card art carries the printed name, so there's no text label under it —
+  // alt is now the only accessible name for each option.
+  imgA.alt = left.name;
+  imgB.alt = right.name;
   imgA.onload = () => { imgA.style.opacity = '1'; };
   imgB.onload = () => { imgB.style.opacity = '1'; };
-
-  nameA.textContent = left.name;
-  nameB.textContent = right.name;
 
   feedbackBar.className = 'feedback-bar';
   feedbackText.textContent = '';
@@ -728,16 +730,6 @@ function updateStreakDisplay() {
   streakEl.textContent = streak;
   bestStreakEl.textContent = bestStreak;
   hstatBest.title = bestStreakCommander ? `Set with ${bestStreakCommander}` : '';
-
-  if (streak >= 10) {
-    streakFlame.textContent = '🔥🔥🔥';
-  } else if (streak >= 5) {
-    streakFlame.textContent = '🔥🔥';
-  } else if (streak >= 2) {
-    streakFlame.textContent = '🔥';
-  } else {
-    streakFlame.textContent = '';
-  }
 }
 
 function saveScores() {
@@ -798,20 +790,14 @@ function closeLightbox() {
 lightboxClose.addEventListener('click', (e) => { e.stopPropagation(); closeLightbox(); });
 lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
 
-// Commander image click → lightbox
-commanderImg.addEventListener('click', (e) => {
+// Commander name click → lightbox
+commanderName.addEventListener('click', (e) => {
   e.stopPropagation();
-  if (commanderImg.src) openLightbox(commanderImg.src);
+  if (commanderImageUrl) openLightbox(commanderImageUrl);
 });
 
 optionA.addEventListener('click', () => handlePick('a'));
 optionB.addEventListener('click', () => handlePick('b'));
-
-document.getElementById('btn-new-commander').addEventListener('click', () => {
-  if (autoAdvanceTimer) clearTimeout(autoAdvanceTimer);
-  const next = prefetchedNext ? prefetchedNext.commander : pickRandomCommander();
-  loadCommander(next);
-});
 
 document.getElementById('btn-retry').addEventListener('click', () => {
   const next = prefetchedNext ? prefetchedNext.commander : pickRandomCommander();
@@ -844,23 +830,31 @@ document.addEventListener('keydown', (e) => {
 });
 
 // ─── Share ────────────────────────────────────────────────────────────────────
-document.getElementById('btn-share').addEventListener('click', () => {
+// The word "Share" and the chain glyph beneath it are one control in two grid
+// rows, so both trigger the same copy and both show the copied state.
+const shareTriggers = [
+  document.getElementById('btn-share'),
+  document.getElementById('btn-share-icon'),
+];
+
+function shareScore() {
   const commanderNote = bestStreakCommander ? ` (${bestStreakCommander})` : '';
   const text = `Cascade 🔥 Best streak: ${bestStreak}${commanderNote}\nhttps://mcgeever1.github.io/mtg-cascade/`;
   navigator.clipboard.writeText(text).then(() => {
-    const btn = document.getElementById('btn-share');
-    btn.classList.add('copied');
+    shareTriggers.forEach((b) => b.classList.add('copied'));
     feedbackBar.className = 'feedback-bar correct';
     feedbackText.textContent = 'Copied!';
     feedbackSub.textContent = '';
     setTimeout(() => {
-      btn.classList.remove('copied');
+      shareTriggers.forEach((b) => b.classList.remove('copied'));
       feedbackBar.className = 'feedback-bar';
       feedbackText.textContent = '';
       feedbackSub.textContent = '';
     }, 2000);
   });
-});
+}
+
+shareTriggers.forEach((b) => b.addEventListener('click', shareScore));
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 (async () => {

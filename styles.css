@@ -1,7 +1,7 @@
 /* ── Reset ───────────────────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ── Card typography ─────────────────────────────────────────────────────────
+/* ── Typography ──────────────────────────────────────────────────────────────
    Magic sets card names in Beleren and rules text in Plantin, both of them
    proprietary serifs. Times New Roman stands in for both — already installed
    everywhere, so there's no web font to download. */
@@ -9,120 +9,121 @@
   --font-title: 'Times New Roman', Times, serif;
   --font-body:  'Times New Roman', Times, serif;
 
-  --bg:        #0d0d1a;
-  --surface:   #16162a;
-  --surface2:  #1e1e38;
-  --border:    rgba(255,255,255,0.08);
-  --text:      #f0f0f8;
-  --muted:     #7878a0;
-  --accent:    #7c3aed;
-  --correct:   #22c55e;
-  --wrong:     #ef4444;
-  --gold:      #f59e0b;
-  --radius:    14px;
+  /* Palette lifted from VS Code's dark theme — one flat background, no
+     raised sheet, so nothing reads as a floating panel. */
+  --page:      #181818;
+  --bg:        #181818;
+  --surface:   #252526;
+  --surface2:  #2d2d30;
+  --border:    #3c3c3c;
+  --rule:      #2b2b2b;
+
+  --text:      #cccccc;
+  --text-hi:   #e7e7e7;
+  --muted:     #858585;
+
+  /* String-literal orange. Warm enough to carry the accent duty a blue can't
+     without the whole thing reading as a stock dashboard. */
+  --accent:    #ce9178;
+  --correct:   #89d185;
+  --wrong:     #f14c4c;
+
+  --radius:    2px;
+  --column:    1040px;
+
+  /* Shared by the commander name and the score figures so the two stay the
+     same size — they sit on one line and any drift shows immediately. */
+  --headline:  34px;
 }
 
 html, body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: var(--bg);
+  background: var(--page);
   color: var(--text);
   font-family: var(--font-body);
   user-select: none;
-  -webkit-app-region: no-drag;
 }
 
-/* ── App shell ───────────────────────────────────────────────────────────── */
+/* ── App shell ───────────────────────────────────────────────────────────────
+   Substack's whole layout is one centered measure with the page falling away
+   on either side. The side rules mark that edge on wide screens and collapse
+   to nothing on narrow ones, where the column already fills the viewport. */
 .app {
   display: flex;
   flex-direction: column;
   height: 100vh;
   height: 100dvh; /* dvh accounts for mobile browser chrome (URL bar, nav bar) */
+  width: 100%;
+  max-width: var(--column);
+  margin: 0 auto;
+  background: var(--bg);
 }
 
-/* ── Header ──────────────────────────────────────────────────────────────── */
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 24px 10px;
-  border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
-  -webkit-app-region: drag;
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  -webkit-app-region: drag;
-}
-
-.logo-icon { font-size: 20px; }
-.logo-text  {
-  font-family: var(--font-title);
-  font-size: 17px;
-  font-weight: 700;
-}
-
-.header-stats {
-  display: flex;
-  gap: 16px;
-  align-items: center;
-  -webkit-app-region: no-drag;
-}
-
-.hstat {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1px;
-  min-width: 44px;
-}
-
-.hstat-label {
+/* ── Score ───────────────────────────────────────────────────────────────────
+   The words share the kicker's row and the figures share the headline's. Each
+   stat gets its own auto-width grid column, so the column sizes to whichever
+   of the two is wider and centres both — no fixed widths to keep in sync. */
+.score-word {
   font-size: 10px;
   text-transform: uppercase;
-  letter-spacing: 0.8px;
+  letter-spacing: 1px;
   color: var(--muted);
+  line-height: 1;
+  white-space: nowrap;
 }
 
-.hstat-value {
-  font-size: 18px;
-  font-weight: 700;
+/* Wraps each figure so it sits as one grid item under its word. */
+.score-figure {
+  display: flex;
+  align-items: baseline;
   line-height: 1;
 }
 
-.hstat-streak {
-  flex-direction: row;
-  align-items: center;
-  gap: 5px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 5px 14px;
+.hstat-value {
+  font-family: var(--font-title);
+  font-size: var(--headline);
+  font-weight: 400;
+  line-height: 1;
+  color: var(--text-hi);
 }
 
-.hstat-streak .hstat-label {
-  font-size: 10px;
+/* Sits in row 2 under the word "Share", level with the two figures. The 🔗
+   glyph renders in full colour, so brightness(0) flattens it to a silhouette
+   and invert(1) turns that silhouette white. */
+.share-icon {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: 19px;
+  line-height: 1;
+  filter: brightness(0) invert(1);
+  transition: opacity 0.15s;
+}
+.share-icon:hover        { opacity: 0.65; }
+.share-icon.copied       { opacity: 0.45; }
+
+.share-btn {
+  background: none;
+  border: none;
   color: var(--muted);
-  margin-left: 2px;
+  font-family: inherit;
+  font-size: 12px;
+  padding: 0;
+  cursor: pointer;
+  border-bottom: 1px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
 }
-
-.streak-flame { font-size: 14px; min-width: 16px; text-align: center; }
-
-.hstat-best {
-  cursor: default;
-  padding: 5px 12px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  position: relative;
+.share-btn:hover {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
 }
-
-/* Show the native title tooltip with a styled pseudo-element alternative */
-.hstat-best:hover { border-color: rgba(255,255,255,0.18); }
+.share-btn.copied {
+  color: var(--correct);
+  border-bottom-color: var(--correct);
+}
 
 /* ── Loading / Error screens ─────────────────────────────────────────────── */
 .loading-screen,
@@ -137,34 +138,34 @@ html, body {
 }
 
 .loading-spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid rgba(255,255,255,0.08);
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--border);
   border-top-color: var(--accent);
   border-radius: 50%;
-  animation: spin 0.7s linear infinite;
+  animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin { to { transform: rotate(360deg); } }
 
 .loading-text { font-size: 15px; }
 
-.error-icon { font-size: 40px; }
-.error-msg  { font-size: 15px; text-align: center; max-width: 360px; color: var(--text); }
+.error-icon { font-size: 28px; color: var(--wrong); }
+.error-msg  { font-size: 15px; text-align: center; max-width: 380px; color: var(--text); }
 
 .btn-retry {
   margin-top: 8px;
-  padding: 10px 28px;
-  background: var(--accent);
-  color: white;
-  border: none;
-  border-radius: 10px;
+  padding: 8px 22px;
+  background: none;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-family: inherit;
   font-size: 14px;
-  font-weight: 600;
   cursor: pointer;
-  transition: opacity 0.15s;
+  transition: border-color 0.15s, color 0.15s;
 }
-.btn-retry:hover { opacity: 0.85; }
+.btn-retry:hover { border-color: var(--accent); color: var(--accent); }
 
 /* ── Game layout ─────────────────────────────────────────────────────────── */
 .game {
@@ -176,103 +177,126 @@ html, body {
 
 /* ── Prompt / Commander section ──────────────────────────────────────────── */
 .prompt {
-  padding: 12px 24px 10px;
+  padding: 18px 32px 12px;
   flex-shrink: 0;
 }
 
-.prompt-label {
-  font-size: 13px;
-  color: var(--muted);
-  text-align: center;
-  margin-bottom: 8px;
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
+/* Column 1 is the text column and takes the slack; columns 2-4 are one per
+   score item. Items centre in their column so each figure lands under its
+   word, and centre in their row so each row aligns on one axis. */
+.prompt-grid {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  align-items: center;
+  justify-items: center;
+  column-gap: 22px;
+  row-gap: 10px;
 }
 
+/* The text column stays ranged left rather than centring like the score. */
+.prompt-grid > .prompt-label,
+.prompt-grid > .commander-display {
+  justify-self: stretch;
+}
+
+/* Small grey uppercase kicker over the subject — the standing pattern for
+   section labels in an editorial layout. */
+.prompt-label {
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+}
+
+/* Ranged left like a headline: the name leads, the card art trails it as a
+   thumbnail. No fill, no border — whitespace does the containing. */
 .commander-display {
   display: flex;
   align-items: center;
-  gap: 12px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 8px 12px 8px 8px;
-}
-
-.commander-img {
-  width: 52px;
-  height: 73px;
-  object-fit: cover;
-  border-radius: 6px;
-  flex-shrink: 0;
-  background: var(--surface2);
-}
-
-.commander-info {
+  justify-content: flex-start;
+  gap: 14px;
+  /* min-width:0 lets the name ellipsize instead of shoving the score off. */
   flex: 1;
   min-width: 0;
 }
 
+/* min-width:0 lets the name ellipsize instead of forcing the row wider. */
+.commander-info {
+  min-width: 0;
+  flex-shrink: 1;
+}
+
+/* The name is the lightbox trigger now that the thumbnail is gone. The zoom
+   cursor is the only affordance — no colour change. inline-block keeps the hit
+   area to the text itself rather than the full width of the column. */
 .commander-name {
   font-family: var(--font-title);
-  font-size: 15px;
-  font-weight: 700;
+  font-size: var(--headline);
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--text-hi);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: inline-block;
+  max-width: 100%;
+  vertical-align: bottom;
+  cursor: zoom-in;
 }
 
 .commander-meta {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--muted);
-  margin-top: 2px;
+  margin-top: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
 }
 
-.btn-new-commander {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  color: var(--muted);
-  border-radius: 8px;
-  width: 32px;
-  height: 32px;
+/* ── Difficulty bar ──────────────────────────────────────────────────────── */
+.difficulty-bar {
   display: flex;
   align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 16px;
+  gap: 14px;
+  padding: 6px 32px;
   flex-shrink: 0;
-  transition: all 0.15s;
 }
-.btn-new-commander:hover { color: var(--text); background: var(--surface); }
+
+.difficulty-bar::before,
+.difficulty-bar::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--rule);
+}
+
+/* Colour is assigned inline by renderer.js per difficulty tier. */
+#difficulty-badge {
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--muted);
+  transition: color 0.4s;
+}
 
 /* ── Comparison grid ─────────────────────────────────────────────────────── */
 .comparison {
   flex: 1;
   display: grid;
-  grid-template-columns: 1fr clamp(36px, 5vw, 52px) 1fr;
-  padding: clamp(4px, 1vh, 12px) clamp(10px, 2vw, 24px) clamp(4px, 1vh, 10px);
+  grid-template-columns: 1fr clamp(40px, 6vw, 64px) 1fr;
+  padding: clamp(6px, 1.4vh, 16px) clamp(12px, 2.4vw, 32px) clamp(6px, 1vh, 12px);
   min-height: 0;
   align-items: center;
   overflow: hidden;
 }
 
+/* No hover treatment — the pointer cursor is the only affordance. */
 .card-option {
   display: flex;
   flex-direction: column;
-  gap: 6px;
   cursor: pointer;
-  border-radius: var(--radius);
-  padding: 5px 5px 14px;
-  transition: background 0.15s, transform 0.12s;
-}
-
-.card-option:hover:not(.revealed) {
-  background: rgba(124, 58, 237, 0.1);
-  transform: scale(1.012);
-}
-
-.card-option:active:not(.revealed) {
-  transform: scale(0.985);
+  padding: 6px;
 }
 
 .card-img-wrap {
@@ -280,21 +304,13 @@ html, body {
   width: 100%;
   /* Lock to MTG card aspect ratio so the full card is always visible */
   aspect-ratio: 488 / 680;
-  /* 380px accounts for all fixed UI + bottom breathing room */
-  max-height: calc(100vh - 380px);
-  max-height: calc(100dvh - 380px);
-  border-radius: clamp(6px, 1vw, 12px);
+  /* Accounts for all fixed UI + bottom breathing room. Dropped from 380px
+     when the card-name labels came out from under the images. */
+  max-height: calc(100vh - 340px);
+  max-height: calc(100dvh - 340px);
+  border-radius: var(--radius);
   overflow: hidden;
   background: transparent;
-}
-
-/* Tighten spacing on short viewports so cards never get clipped */
-@media (max-height: 700px) {
-  .prompt        { padding: 6px 24px 6px; }
-  .commander-img { width: 40px; height: 56px; }
-  .difficulty-bar { padding: 3px 24px; }
-  .feedback-bar  { min-height: 38px; padding: 5px 24px; }
-  .key-hints     { padding: 3px; }
 }
 
 .card-img {
@@ -314,44 +330,42 @@ html, body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 6px;
   opacity: 0;
   transition: opacity 0.35s ease;
   pointer-events: none;
-  border-radius: 10px;
 }
 
-.result-overlay.winner {
-  background: rgba(34, 197, 94, 0.82);
-}
-
-.result-overlay.loser {
-  background: rgba(0, 0, 0, 0.72);
-}
-
-.result-overlay.picked-wrong {
-  background: rgba(239, 68, 68, 0.82);
-}
+.result-overlay.winner       { background: rgba(137, 209, 133, 0.90); }
+.result-overlay.loser        { background: rgba(24, 24, 24, 0.86); }
+.result-overlay.picked-wrong { background: rgba(241, 76, 76, 0.90); }
 
 .result-icon {
-  font-size: 32px;
-  font-weight: 900;
-  color: white;
+  font-size: 28px;
+  font-weight: 400;
+  color: #181818;
   line-height: 1;
 }
 
 .result-pct {
-  font-size: 26px;
-  font-weight: 800;
-  color: white;
+  font-family: var(--font-title);
+  font-size: 30px;
+  font-weight: 400;
+  color: #181818;
   line-height: 1;
 }
 
 .result-count {
-  font-size: 12px;
-  color: rgba(255,255,255,0.85);
-  font-weight: 500;
+  font-size: 11px;
+  color: rgba(24, 24, 24, 0.75);
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
+
+/* The dimmed side keeps light text — it sits on near-black, not on colour. */
+.result-overlay.loser .result-icon,
+.result-overlay.loser .result-pct   { color: var(--text); }
+.result-overlay.loser .result-count { color: var(--muted); }
 
 /* ── VS column ───────────────────────────────────────────────────────────── */
 .vs-column {
@@ -360,97 +374,33 @@ html, body {
   justify-content: center;
 }
 
+/* Lowercased in CSS so the markup can keep reading "VS". */
 .vs-badge {
-  width: 34px;
-  height: 34px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   font-family: var(--font-title);
-  font-size: 11px;
-  font-weight: 800;
+  font-style: italic;
+  font-size: 15px;
+  text-transform: lowercase;
   color: var(--muted);
-  letter-spacing: 0.5px;
-}
-
-/* ── Difficulty bar ──────────────────────────────────────────────────────── */
-.difficulty-bar {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 5px 24px;
-  flex-shrink: 0;
-}
-
-.difficulty-bar::before,
-.difficulty-bar::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--border);
-}
-
-/* Type-line analog — Beleren, matching the type line on a real card */
-#difficulty-badge {
-  font-family: var(--font-title);
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  white-space: nowrap;
-  color: var(--muted);
-  transition: color 0.4s;
-}
-
-/* ── Card label ──────────────────────────────────────────────────────────── */
-.card-label {
-  text-align: center;
-  flex-shrink: 0;
-}
-
-.card-name {
-  font-family: var(--font-title);
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text);
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
 /* ── Feedback bar ────────────────────────────────────────────────────────── */
 .feedback-bar {
   flex-shrink: 0;
-  padding: 8px 24px;
+  padding: 10px 32px;
   text-align: center;
-  min-height: 48px;
+  min-height: 52px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
-  transition: background 0.2s;
-  border-top: 1px solid var(--border);
-}
-
-.feedback-bar.correct {
-  background: rgba(34, 197, 94, 0.12);
-  border-top-color: rgba(34, 197, 94, 0.3);
-}
-
-.feedback-bar.wrong {
-  background: rgba(239, 68, 68, 0.12);
-  border-top-color: rgba(239, 68, 68, 0.3);
+  gap: 3px;
 }
 
 .feedback-text {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--text);
+  font-family: var(--font-title);
+  font-size: 17px;
+  font-weight: 400;
+  color: var(--text-hi);
 }
 
 .feedback-bar.correct .feedback-text { color: var(--correct); }
@@ -465,7 +415,7 @@ html, body {
 .key-hints {
   flex-shrink: 0;
   text-align: center;
-  padding: 6px;
+  padding: 8px;
   font-size: 11px;
   color: var(--muted);
 }
@@ -474,18 +424,18 @@ kbd {
   display: inline-block;
   background: var(--surface2);
   border: 1px solid var(--border);
-  border-radius: 4px;
+  border-radius: var(--radius);
   padding: 1px 5px;
   font-family: inherit;
   font-size: 10px;
+  color: var(--text);
 }
 
 /* ── Lightbox ────────────────────────────────────────────────────────────── */
 .lightbox {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.88);
-  backdrop-filter: blur(6px);
+  background: rgba(24, 24, 24, 0.94);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -504,43 +454,40 @@ kbd {
   max-width: 90vw;
   max-height: 90vh;
   object-fit: contain;
-  border-radius: 16px;
-  box-shadow: 0 32px 96px rgba(0,0,0,0.8);
-  animation: zoomIn 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-@keyframes zoomIn {
-  from { transform: scale(0.85); opacity: 0; }
-  to   { transform: scale(1);    opacity: 1; }
+  border-radius: var(--radius);
 }
 
 .lightbox-close {
   position: absolute;
-  top: 20px;
-  right: 24px;
-  width: 36px;
-  height: 36px;
-  background: rgba(255,255,255,0.15);
-  border-radius: 50%;
+  top: 18px;
+  right: 22px;
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 16px;
   cursor: pointer;
-  color: white;
-  transition: background 0.15s;
+  color: var(--muted);
+  transition: color 0.15s;
 }
-.lightbox-close:hover { background: rgba(255,255,255,0.3); }
+.lightbox-close:hover { color: var(--text-hi); }
 
-.commander-img {
-  cursor: zoom-in;
+/* ── Short viewports: tighten so cards never get clipped ─────────────────── */
+@media (max-height: 700px) {
+  /* Scales the commander name and the score figures together. */
+  :root           { --headline: 26px; }
+  .prompt         { padding: 10px 32px 6px; }
+  .prompt-grid    { row-gap: 6px; }
+  .difficulty-bar { padding: 4px 32px; }
+  .feedback-bar   { min-height: 42px; padding: 6px 32px; }
+  .key-hints      { padding: 4px; }
 }
 
 /* ── Touch devices: hide keyboard hints, enlarge commander UI ────────────── */
 @media (hover: none) and (pointer: coarse) {
   .key-hints { display: none; }
-  .commander-name { font-size: 18px; }
-  .btn-new-commander { width: 40px; height: 40px; font-size: 20px; }
+  :root { --headline: 26px; }
 
   /* Pin feedback bar to bottom of viewport — avoids it being cut off by browser chrome */
   .feedback-bar {
@@ -549,33 +496,11 @@ kbd {
     left: 0;
     right: 0;
     background: var(--bg);
-    padding-bottom: calc(8px + env(safe-area-inset-bottom));
-    min-height: calc(56px + env(safe-area-inset-bottom));
+    padding-bottom: calc(10px + env(safe-area-inset-bottom));
+    min-height: calc(58px + env(safe-area-inset-bottom));
     z-index: 10;
   }
-  .feedback-bar.correct { background: rgba(34, 197, 94, 0.12); }
-  .feedback-bar.wrong   { background: rgba(239, 68, 68, 0.12); }
 
   /* Reserve space so the fixed bar doesn't overlap the comparison cards */
-  .game { padding-bottom: calc(60px + env(safe-area-inset-bottom)); }
-}
-
-/* ── Share button ────────────────────────────────────────────────────────── */
-.share-btn {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  color: var(--muted);
-  border-radius: 6px;
-  padding: 3px 8px;
-  font-size: 11px;
-  cursor: pointer;
-  transition: color 0.15s, border-color 0.15s;
-}
-.share-btn:hover {
-  color: var(--text);
-  border-color: var(--accent);
-}
-.share-btn.copied {
-  color: #22c55e;
-  border-color: #22c55e;
+  .game { padding-bottom: calc(62px + env(safe-area-inset-bottom)); }
 }

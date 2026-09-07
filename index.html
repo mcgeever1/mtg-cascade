@@ -16,26 +16,6 @@
 <body>
   <div class="app">
 
-    <!-- Header -->
-    <header class="header">
-      <div class="header-left">
-        <span class="logo-icon">⚔</span>
-        <span class="logo-text">Cascade</span>
-      </div>
-      <div class="header-stats">
-        <div class="hstat hstat-streak" id="hstat-streak">
-          <span class="streak-flame" id="streak-flame"></span>
-          <span class="hstat-value" id="streak">0</span>
-          <span class="hstat-label">streak</span>
-        </div>
-        <div class="hstat hstat-best" title="" id="hstat-best">
-          <span class="hstat-label">Best</span>
-          <span class="hstat-value" id="best-streak">0</span>
-        </div>
-        <button class="share-btn" id="btn-share" title="Copy score to clipboard">🔗</button>
-      </div>
-    </header>
-
     <!-- Loading screen -->
     <div class="loading-screen" id="loading-screen">
       <div class="loading-spinner"></div>
@@ -54,14 +34,28 @@
 
       <!-- Question prompt -->
       <div class="prompt">
-        <div class="prompt-label">Which card sees more play in decks with…</div>
-        <div class="commander-display" id="commander-display">
-          <img class="commander-img" id="commander-img" src="" alt="">
-          <div class="commander-info">
-            <div class="commander-name" id="commander-name">Commander</div>
-            <div class="commander-meta" id="commander-meta"></div>
+        <!-- Two grid rows. Row 1: the kicker and the score words. Row 2: the
+             commander headline and each figure, in its word's own column.
+             Order matters — the grid auto-places these into the two rows. -->
+        <div class="prompt-grid">
+          <div class="prompt-label">Which card sees more play in decks with…</div>
+          <span class="score-word" id="hstat-streak">streak</span>
+          <span class="score-word" id="hstat-best" title="">best</span>
+          <button class="share-btn" id="btn-share" title="Copy score to clipboard">Share</button>
+
+          <div class="commander-display" id="commander-display">
+            <div class="commander-info">
+              <div class="commander-name" id="commander-name" title="View card">Commander</div>
+              <div class="commander-meta" id="commander-meta"></div>
+            </div>
           </div>
-          <button class="btn-new-commander" id="btn-new-commander" title="Try a different commander">⟳</button>
+          <span class="score-figure">
+            <span class="hstat-value" id="streak">0</span>
+          </span>
+          <span class="score-figure">
+            <span class="hstat-value" id="best-streak">0</span>
+          </span>
+          <button class="share-icon" id="btn-share-icon" title="Copy score to clipboard">🔗</button>
         </div>
       </div>
 
@@ -81,9 +75,6 @@
               <div class="result-count" id="count-a"></div>
             </div>
           </div>
-          <div class="card-label">
-            <span class="card-name" id="name-a">…</span>
-          </div>
         </div>
 
         <div class="vs-column">
@@ -98,9 +89,6 @@
               <div class="result-pct" id="pct-b"></div>
               <div class="result-count" id="count-b"></div>
             </div>
-          </div>
-          <div class="card-label">
-            <span class="card-name" id="name-b">…</span>
           </div>
         </div>
       </div>
