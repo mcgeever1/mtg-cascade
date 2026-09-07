@@ -22,9 +22,9 @@
   --text-hi:   #e7e7e7;
   --muted:     #858585;
 
-  /* String-literal orange. Warm enough to carry the accent duty a blue can't
-     without the whole thing reading as a stock dashboard. */
-  --accent:    #ce9178;
+  /* No hue in the accent — highlights are plain white against the greys, so
+     the only colour on the page is the win/lose and difficulty signalling. */
+  --accent:    #ffffff;
   --correct:   #89d185;
   --wrong:     #f14c4c;
 

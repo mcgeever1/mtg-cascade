@@ -256,10 +256,11 @@ const COMMANDERS = [
 // minInclusion: at least one card in the pair must exceed this inclusion rate,
 //   ensuring early rounds always feature a well-known, recognizable card.
 // color: VS Code syntax-token colours, matching the palette in styles.css.
+// Green → yellow → red → magenta, with no orange step in the ramp.
 const DIFFICULTY_LEVELS = [
   { minStreak: 0,  minRatio: 2.0,  maxRatio: Infinity, minInclusion: 0.30, label: 'Easy',      color: '#89d185' },
   { minStreak: 3,  minRatio: 1.5,  maxRatio: 2.0,      minInclusion: 0.15, label: 'Medium',    color: '#dcdcaa' },
-  { minStreak: 6,  minRatio: 1.25, maxRatio: 1.5,      minInclusion: 0.08, label: 'Hard',      color: '#ce9178' },
+  { minStreak: 6,  minRatio: 1.25, maxRatio: 1.5,      minInclusion: 0.08, label: 'Hard',      color: '#d16969' },
   { minStreak: 10, minRatio: 1.12, maxRatio: 1.25,     minInclusion: 0.03, label: 'Expert',    color: '#f14c4c' },
   { minStreak: 15, minRatio: 1.0,  maxRatio: 1.12,     minInclusion: 0,    label: 'Nightmare', color: '#c586c0' },
 ];
