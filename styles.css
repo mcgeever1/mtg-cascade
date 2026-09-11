@@ -202,7 +202,7 @@ html, body {
 /* Small grey uppercase kicker over the subject — the standing pattern for
    section labels in an editorial layout. */
 .prompt-label {
-  font-size: 10px;
+  font-size: 14px;
   color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 1.4px;
@@ -245,7 +245,7 @@ html, body {
 }
 
 .commander-meta {
-  font-size: 11px;
+  font-size: 14px;
   color: var(--muted);
   margin-top: 5px;
   text-transform: uppercase;
