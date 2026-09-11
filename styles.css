@@ -271,7 +271,7 @@ html, body {
 
 /* Colour is assigned inline by renderer.js per difficulty tier. */
 #difficulty-badge {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 400;
   letter-spacing: 1.4px;
   text-transform: uppercase;
@@ -378,7 +378,7 @@ html, body {
 .vs-badge {
   font-family: var(--font-title);
   font-style: italic;
-  font-size: 15px;
+  font-size: 20px;
   text-transform: lowercase;
   color: var(--muted);
 }
