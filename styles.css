@@ -11,8 +11,8 @@
 
   /* Palette lifted from VS Code's dark theme — one flat background, no
      raised sheet, so nothing reads as a floating panel. */
-  --page:      #181818;
-  --bg:        #181818;
+  --page:      #1c1c1d;
+  --bg:        #1c1c1d;
   --surface:   #252526;
   --surface2:  #2d2d30;
   --border:    #3c3c3c;
